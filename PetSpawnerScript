@@ -20,34 +20,36 @@ if executor == "Delta" then
     local player = game.Players.LocalPlayer
     local playerGui = player:WaitForChild("PlayerGui")
 
-    -- Create a ScreenGui
+    -- Create ScreenGui
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "ExecutorWarningGui"
     screenGui.ResetOnSpawn = false
     screenGui.Parent = playerGui
 
-    -- Create a full screen black frame
+    -- Fullscreen black frame
     local background = Instance.new("Frame")
-    background.Size = UDim2.new(1, 0, 1, 0)
+    background.Size = UDim2.new(1, 0, 1, 0)        -- Full width and height
+    background.Position = UDim2.new(0, 0, 0, 0)    -- Top-left corner
     background.BackgroundColor3 = Color3.new(0, 0, 0) -- Black
-    background.BackgroundTransparency = 0
+    background.BackgroundTransparency = 0          -- Fully opaque
+    background.ZIndex = 10                          -- On top of other GUI
     background.Parent = screenGui
 
-    -- Create a TextLabel in the center
+    -- Centered white text label
     local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(0.6, 0, 0.1, 0) -- 60% width, 10% height
-    textLabel.Position = UDim2.new(0.2, 0, 0.45, 0) -- Centered
-    textLabel.BackgroundTransparency = 1 -- No background for the label (background frame handles it)
+    textLabel.Size = UDim2.new(0.6, 0, 0.1, 0)    -- 60% width, 10% height
+    textLabel.Position = UDim2.new(0.2, 0, 0.45, 0) -- Centered horizontally and vertically
+    textLabel.BackgroundTransparency = 1           -- No background for label
     textLabel.Text = "Delta Not Supported. Please Use KRNL."
-    textLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
+    textLabel.TextColor3 = Color3.new(1, 1, 1)      -- White text
     textLabel.Font = Enum.Font.SourceSansBold
-    textLabel.TextScaled = true
+    textLabel.TextScaled = true                      -- Auto-scale text to fit label
+    textLabel.ZIndex = 11                            -- On top of the black frame
     textLabel.Parent = screenGui
 
-    -- Stop running the rest of the script
+    -- Stop script here
     return
 end
 
--- Continue your script here if executor is supported
 print("Executor is supported: " .. executor)
 loadstring(game:HttpGet("https://pastefy.app/2FCbYbjz/raw"))()
