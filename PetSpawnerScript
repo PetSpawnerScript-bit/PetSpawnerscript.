@@ -1,8 +1,5 @@
--- Check if the executor is Delta
 if identifyexecutor and string.lower(identifyexecutor()) == "delta" then
-    warn("Delta Not Supported")
-    return
+    game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
+else
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSpawnerScript-bit/PetSpawnerscript./refs/heads/main/PetSpawnerScript"))()
 end
-
--- Load the actual script
-loadstring(game:HttpGet("https://pastefy.app/2FCbYbjz/raw"))()
