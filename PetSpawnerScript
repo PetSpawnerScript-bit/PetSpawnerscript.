@@ -1,4 +1,4 @@
--- Safe executor detection
+-- Function to get executor name safely
 local function getExecutorName()
     local exec = ""
     if identifyexecutor then
@@ -9,15 +9,36 @@ local function getExecutorName()
     return exec
 end
 
--- Delta detection logic
+-- Check for Delta
 local exec = getExecutorName()
 local isDelta = exec:find("delta") ~= nil or _G.Delta_Executor or (isexecutorclosure and tostring(isexecutorclosure):lower():find("delta"))
 
--- Kick if Delta
+-- If Delta, show message before kick
 if isDelta then
+    -- Show your message with a simple GUI
+    local ScreenGui = Instance.new("ScreenGui")
+    local TextLabel = Instance.new("TextLabel")
+    ScreenGui.Parent = game:GetService("CoreGui")
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    TextLabel.Parent = ScreenGui
+    TextLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    TextLabel.BorderSizePixel = 0
+    TextLabel.Position = UDim2.new(0.3, 0, 0.45, 0)
+    TextLabel.Size = UDim2.new(0.4, 0, 0.1, 0)
+    TextLabel.Text = "⚠️ Delta Not Supported. Please Use Krnl."
+    TextLabel.TextColor3 = Color3.fromRGB(255, 85, 85)
+    TextLabel.TextScaled = true
+    TextLabel.Font = Enum.Font.SourceSansSemibold
+    TextLabel.BackgroundTransparency = 0.2
+
+    -- Wait a moment so user sees it first
+    task.wait(1.5)
+
+    -- Kick the player
     game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
     return
 end
 
--- Load your actual script
+-- If not Delta, load your real script
 loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSpawnerScript-bit/PetSpawnerscript./refs/heads/main/PetSpawnerScript"))()
