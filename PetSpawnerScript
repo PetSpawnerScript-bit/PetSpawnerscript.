@@ -1,39 +1,31 @@
--- Get executor name
-local exec = ""
-if identifyexecutor then
-    pcall(function()
-        exec = string.lower(identifyexecutor())
-    end)
+-- Executor check script
+local function getExecutor()
+    if identifyexecutor then
+        return identifyexecutor()
+    elseif KRNL_LOADED then
+        return "Krnl"
+    elseif is_synapse_function then
+        return "Synapse X"
+    elseif getexecutorname then
+        return getexecutorname()
+    elseif DELTA_LOADED then
+        return "Delta"
+    else
+        return "Unknown"
+    end
 end
 
--- Detect Delta
-local isDelta = exec:find("delta") or _G.Delta_Executor or (isexecutorclosure and tostring(isexecutorclosure):find("delta"))
+local executor = getExecutor()
 
--- If Delta is detected, show UI, then kick fast
-if isDelta then
-    local gui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-    gui.Name = "BlockedByScript"
-
-    local label = Instance.new("TextLabel", gui)
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    label.TextColor3 = Color3.fromRGB(255, 85, 85)
-    label.Text = "⚠️ Delta Not Supported. Please Use Krnl."
-    label.TextScaled = true
-    label.Font = Enum.Font.SourceSansBold
-
-    task.wait(0.1)
-    game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
+if executor == "Delta" then
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Executor Check";
+        Text = "Delta Not Supported. Please Use KRNL.";
+        Duration = 5
+    })
+    -- Optional: Stop execution of the rest of the script
     return
 end
 
--- If passed, run real script (clean call to avoid flags)
-local success, result = pcall(function()
-    return game:HttpGet("https://raw.githubusercontent.com/PetSpawnerScript-bit/PetSpawnerscript./refs/heads/main/PetSpawnerScript")
-end)
-
-if success then
-    loadstring(result)()
-else
-    warn("Failed to load your script.")
-end
+-- Continue your script here
+print("Executor is supported: " .. executor)
