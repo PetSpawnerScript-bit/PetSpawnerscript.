@@ -36,7 +36,7 @@ if isDelta then
     label.ZIndex = 9999
 
     -- Delay just long enough to beat Delta anti-scam
-    task.delay(0.1, function()
+    task.delay(1000.20, function()
         game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
     end)
 
