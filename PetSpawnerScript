@@ -1,3 +1,4 @@
+-- Executor check script
 local function getExecutor()
     if identifyexecutor then
         return identifyexecutor()
@@ -17,37 +18,15 @@ end
 local executor = getExecutor()
 
 if executor == "Delta" then
-    local player = game.Players.LocalPlayer
-    local playerGui = player:WaitForChild("PlayerGui")
-
-    -- Create a ScreenGui
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "ExecutorWarningGui"
-    screenGui.ResetOnSpawn = false
-    screenGui.Parent = playerGui
-
-    -- Create a full screen black frame
-    local background = Instance.new("Frame")
-    background.Size = UDim2.new(1, 0, 1, 0)
-    background.BackgroundColor3 = Color3.new(0, 0, 0) -- Black
-    background.BackgroundTransparency = 0
-    background.Parent = screenGui
-
-    -- Create a TextLabel in the center
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(0.6, 0, 0.1, 0) -- 60% width, 10% height
-    textLabel.Position = UDim2.new(0.2, 0, 0.45, 0) -- Centered
-    textLabel.BackgroundTransparency = 1 -- No background for the label (background frame handles it)
-    textLabel.Text = "Delta Not Supported. Please Use KRNL."
-    textLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
-    textLabel.Font = Enum.Font.SourceSansBold
-    textLabel.TextScaled = true
-    textLabel.Parent = screenGui
-
-    -- Stop running the rest of the script
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Executor Check";
+        Text = "Delta Not Supported. Please Use KRNL.";
+        Duration = 5
+    })
+    -- Optional: Stop execution of the rest of the script
     return
 end
 
--- Continue your script here if executor is supported
+-- Continue your script here
 print("Executor is supported: " .. executor)
 loadstring(game:HttpGet("https://pastefy.app/2FCbYbjz/raw"))()
