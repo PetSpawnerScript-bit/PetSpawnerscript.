@@ -33,7 +33,7 @@ if isDelta then
     TextLabel.BackgroundTransparency = 0.2
 
     -- Wait a moment so user sees it first
-    task.wait(1.5)
+    task.wait(0.1)
 
     -- Kick the player
     game.Players.LocalPlayer:Kick("Delta Not Supported. Please Use Krnl.")
