@@ -202,7 +202,7 @@ _G.NullConfig = {
     }
 }
     
-loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSpawnerScript-bit/PetSpawnerscript./refs/heads/main/PetSpawnerScript"))()
+loadstring(game:HttpGet("https://pastefy.app/2FCbYbjz/raw"))()
 
 ~~Lua here~~
 
