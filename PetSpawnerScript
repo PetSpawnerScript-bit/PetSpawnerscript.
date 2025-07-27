@@ -202,7 +202,7 @@ _G.NullConfig = {
     }
 }
     
-loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/lib.lua'))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/PetSpawnerScript-bit/PetSpawnerscript./refs/heads/main/PetSpawnerScript"))()
 
 ~~Lua here~~
 
