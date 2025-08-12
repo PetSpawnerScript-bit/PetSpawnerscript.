@@ -1,1 +1,65 @@
-loadstring(game:HttpGet('https://paste.rs/JjJf4'))()
+-- LocalScript in StarterPlayerScripts
+
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player.PlayerGui
+
+-- TEXT
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
+textLabel.Position = UDim2.new(0.25, 0, 0.05, 0)
+textLabel.Text = "GET RICK ROLLED LOL"
+textLabel.TextScaled = true
+textLabel.Font = Enum.Font.SourceSansBold
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.BackgroundTransparency = 1
+textLabel.Parent = screenGui
+
+-- IMAGE
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.Size = UDim2.new(0.5, 0, 0.5, 0)
+imageLabel.Position = UDim2.new(0.25, 0, 0.2, 0)
+imageLabel.Image = "rbxassetid://1234567890" -- Replace with your decal ID
+imageLabel.BackgroundTransparency = 1
+imageLabel.Parent = screenGui
+
+-- MUSIC
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://9876543210" -- Replace with your audio ID
+sound.Volume = 1
+sound.Looped = true
+sound.Parent = player:WaitForChild("PlayerGui")
+sound:Play()
+
+-- FLASHING TEXT COLORS
+task.spawn(function()
+	while true do
+		textLabel.TextColor3 = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))
+		task.wait(0.2)
+	end
+end)
+
+-- SPINNING IMAGE
+task.spawn(function()
+	local rotation = 0
+	while true do
+		rotation = (rotation + 2) % 360
+		imageLabel.Rotation = rotation
+		task.wait(0.03)
+	end
+end)
+
+-- PULSATING IMAGE SIZE
+task.spawn(function()
+	local grow = true
+	while true do
+		if grow then
+			imageLabel.Size = imageLabel.Size + UDim2.new(0.01, 0, 0.01, 0)
+			if imageLabel.Size.X.Scale >= 0.6 then grow = false end
+		else
+			imageLabel.Size = imageLabel.Size - UDim2.new(0.01, 0, 0.01, 0)
+			if imageLabel.Size.X.Scale <= 0.4 then grow = true end
+		end
+		task.wait(0.05)
+	end
+end)
