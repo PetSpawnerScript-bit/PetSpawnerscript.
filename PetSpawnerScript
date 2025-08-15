@@ -3,6 +3,18 @@ local TeleportService = game:GetService("TeleportService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
+-- Clipboard helper
+local function safeSetClipboard(text)
+    if setclipboard then
+        setclipboard(text)
+    elseif toclipboard then
+        toclipboard(text)
+    else
+        warn("Clipboard not supported in this executor.")
+    end
+end
+
+-- Check if server is alive
 local function isServerAlive(placeId, jobId)
     local success, result = pcall(function()
         return game:HttpGet(string.format("https://games.roblox.com/v1/games/%d/servers/Public?limit=100", placeId))
@@ -18,18 +30,61 @@ local function isServerAlive(placeId, jobId)
     return false
 end
 
-JoinJobBtn.MouseButton1Click:Connect(function()
-    local placeId = tonumber(PlaceBox.Text)
-    local jobId = JobBox.Text
-    if placeId and jobId ~= "" then
-        local alive, players, maxPlayers = isServerAlive(placeId, jobId)
-        if alive then
-            print("Joining server:", jobId, string.format("(%d/%d players)", players, maxPlayers))
-            TeleportService:TeleportToPlaceInstance(placeId, jobId, player)
-        else
-            warn("Server not found or no longer available.")
-        end
-    else
-        warn("Please enter both a valid Place ID and Job ID.")
-    end
-end)
+-- GUI setup
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 250, 0, 270)
+Frame.Position = UDim2.new(0.4, 0, 0.3, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- White background
+Frame.Active = true
+Frame.Draggable = true
+Frame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = Frame
+
+-- Label for server timing
+local ServerLabel = Instance.new("TextLabel")
+ServerLabel.Size = UDim2.new(1, 0, 0, 30)
+ServerLabel.BackgroundTransparency = 1
+ServerLabel.Text = "Server Timing: Hour: 00, Minute: 00, Second: 00"
+ServerLabel.TextColor3 = Color3.fromRGB(0, 0, 0) -- Black text
+ServerLabel.Parent = Frame
+
+-- Helper for buttons
+local function createButton(text, yPos, color, textColor)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 220, 0, 30)
+    btn.Position = UDim2.new(0.5, -110, 0, yPos)
+    btn.BackgroundColor3 = color or Color3.fromRGB(230, 230, 230)
+    btn.Text = text
+    btn.TextColor3 = textColor or Color3.fromRGB(0, 0, 0)
+    btn.Parent = Frame
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = btn
+    return btn
+end
+
+-- Place ID box
+local PlaceBox = Instance.new("TextBox")
+PlaceBox.Size = UDim2.new(0, 220, 0, 30)
+PlaceBox.Position = UDim2.new(0.5, -110, 0, 35)
+PlaceBox.PlaceholderText = "Place-ID Input"
+PlaceBox.Text = tostring(game.PlaceId)
+PlaceBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+PlaceBox.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+PlaceBox.Parent = Frame
+local corner1 = Instance.new("UICorner")
+corner1.CornerRadius = UDim.new(0, 6)
+corner1.Parent = PlaceBox
+
+-- Buttons
+local ClearJobBtn = createButton("Clear Job-ID", 70, Color3.fromRGB(200, 50, 50), Color3.fromRGB(255, 255, 255))
+local JobBox = Instance.new("TextBox")
+JobBox.Size = UDim2.new(0, 220, 0, 30)
+Job
