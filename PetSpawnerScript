@@ -1,90 +1,91 @@
-local HttpService = game:GetService("HttpService")
-local TeleportService = game:GetService("TeleportService")
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+-- Obfuscate this script to troll people ( also open source paste your image to change it to custom rolls , credits to stxr, Dm lasnuh to get support
 
--- Clipboard helper
-local function safeSetClipboard(text)
-    if setclipboard then
-        setclipboard(text)
-    elseif toclipboard then
-        toclipboard(text)
-    else
-        warn("Clipboard not supported in this executor.")
-    end
-end
+local imageAssetId = "rbxassetid://8423195710"
 
--- Check if server is alive
-local function isServerAlive(placeId, jobId)
-    local success, result = pcall(function()
-        return game:HttpGet(string.format("https://games.roblox.com/v1/games/%d/servers/Public?limit=100", placeId))
-    end)
-    if success then
-        local data = HttpService:JSONDecode(result)
-        for _, server in ipairs(data.data) do
-            if server.id == jobId then
-                return true, server.playing, server.maxPlayers
-            end
+local function replaceTextureId(screenGui)
+    for _, frame in ipairs(screenGui:GetDescendants()) do
+        if frame:IsA("ImageLabel") or frame:IsA("ImageButton") then
+            frame.Image = imageAssetId
         end
     end
-    return false
 end
 
--- GUI setup
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.CoreGui
-ScreenGui.ResetOnSpawn = false
-
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 250, 0, 270)
-Frame.Position = UDim2.new(0.4, 0, 0.3, 0)
-Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- White background
-Frame.Active = true
-Frame.Draggable = true
-Frame.Parent = ScreenGui
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 8)
-UICorner.Parent = Frame
-
--- Label for server timing
-local ServerLabel = Instance.new("TextLabel")
-ServerLabel.Size = UDim2.new(1, 0, 0, 30)
-ServerLabel.BackgroundTransparency = 1
-ServerLabel.Text = "Server Timing: Hour: 00, Minute: 00, Second: 00"
-ServerLabel.TextColor3 = Color3.fromRGB(0, 0, 0) -- Black text
-ServerLabel.Parent = Frame
-
--- Helper for buttons
-local function createButton(text, yPos, color, textColor)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 220, 0, 30)
-    btn.Position = UDim2.new(0.5, -110, 0, yPos)
-    btn.BackgroundColor3 = color or Color3.fromRGB(230, 230, 230)
-    btn.Text = text
-    btn.TextColor3 = textColor or Color3.fromRGB(0, 0, 0)
-    btn.Parent = Frame
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = btn
-    return btn
+local function getTextGUIs()
+    local textGUIs = {}
+    for _, instance in ipairs(game:GetDescendants()) do
+        if instance:IsA("TextLabel") or instance:IsA("TextBox") then
+            table.insert(textGUIs, instance)
+        end
+    end
+    return textGUIs
 end
 
--- Place ID box
-local PlaceBox = Instance.new("TextBox")
-PlaceBox.Size = UDim2.new(0, 220, 0, 30)
-PlaceBox.Position = UDim2.new(0.5, -110, 0, 35)
-PlaceBox.PlaceholderText = "Place-ID Input"
-PlaceBox.Text = tostring(game.PlaceId)
-PlaceBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-PlaceBox.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
-PlaceBox.Parent = Frame
-local corner1 = Instance.new("UICorner")
-corner1.CornerRadius = UDim.new(0, 6)
-corner1.Parent = PlaceBox
+local function trollageTextGUIs()
+    local textGUIs = getTextGUIs()
+    for _, textGUI in ipairs(textGUIs) do
+        textGUI.Text = "Never Gonna Give You Up"
+    end
+end
 
--- Buttons
-local ClearJobBtn = createButton("Clear Job-ID", 70, Color3.fromRGB(200, 50, 50), Color3.fromRGB(255, 255, 255))
-local JobBox = Instance.new("TextBox")
-JobBox.Size = UDim2.new(0, 220, 0, 30)
-Job
+while true do
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+            v.Image = imageAssetId
+            v:GetPropertyChangedSignal("Image"):Connect(function()
+                v.Image = imageAssetId
+            end)
+        end
+        
+        if (v:IsA("TextLabel") or v:IsA("TextButton")) and not v:GetFullName():find("ChatChannelParentFrame") then
+            if v.Text ~= "" then
+                v.Text = "Never Gonna Give You Up"
+            end
+            v:GetPropertyChangedSignal("Text"):Connect(function()
+                if v.Text ~= "" then
+                    v.Text = "Never Gonna Let You Down"
+                end
+            end)
+        end
+        
+        if v:IsA("Texture") or v:IsA("Decal") then
+            v.Texture = imageAssetId
+            v:GetPropertyChangedSignal("Texture"):Connect(function()
+                v.Texture = imageAssetId
+            end)
+        end
+        
+        if v:IsA("MeshPart") then
+            v.TextureID = imageAssetId
+            v:GetPropertyChangedSignal("TextureID"):Connect(function()
+                v.TextureID = imageAssetId
+            end)
+        end
+        
+        if v:IsA("SpecialMesh") then
+            v.TextureId = imageAssetId
+            v:GetPropertyChangedSignal("TextureId"):Connect(function()
+                v.TextureId = imageAssetId
+            end)
+        end
+    end
+    
+    game.Lighting.Sky.SkyboxBk = imageAssetId
+    game.Lighting.Sky.SkyboxDn = imageAssetId
+    game.Lighting.Sky.SkyboxFt = imageAssetId
+    game.Lighting.Sky.SkyboxLf = imageAssetId
+    game.Lighting.Sky.SkyboxRt = imageAssetId
+    game.Lighting.Sky.SkyboxUp = imageAssetId
+    
+    for _, screenGui in ipairs(game:GetDescendants()) do
+        if screenGui:IsA("ScreenGui") then
+            replaceTextureId(screenGui)
+        end
+    end
+    
+    trollageTextGUIs()
+    
+    wait(0.5)
+end
