@@ -1,98 +1,16 @@
--- LocalScript inside StarterGui > ScreenGui
-local TeleportService = game:GetService("TeleportService")
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+-- Clear Job-ID button (red)
+local ClearJobBtn = Instance.new("TextButton")
+ClearJobBtn.Size = UDim2.new(0, 220, 0, 30)
+ClearJobBtn.Position = UDim2.new(0.5, -110, 0, 70)
+ClearJobBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50) -- red background
+ClearJobBtn.Text = "Clear Job-ID"
+ClearJobBtn.TextColor3 = Color3.fromRGB(255, 255, 255) -- white text
+ClearJobBtn.Parent = Frame
 
--- Create main GUI
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = player:WaitForChild("PlayerGui")
-ScreenGui.ResetOnSpawn = false
+local clearCorner = Instance.new("UICorner")
+clearCorner.CornerRadius = UDim.new(0, 6)
+clearCorner.Parent = ClearJobBtn
 
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 250, 0, 220)
-Frame.Position = UDim2.new(0.4, 0, 0.3, 0)
-Frame.BackgroundColor3 = Color3.fromRGB(230, 235, 225)
-Frame.Parent = ScreenGui
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 8)
-UICorner.Parent = Frame
-
--- Make Frame draggable
-Frame.Active = true
-Frame.Draggable = true
-
--- Helper: create buttons
-local function createButton(text, positionY)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 220, 0, 30)
-    btn.Position = UDim2.new(0.5, -110, 0, positionY)
-    btn.BackgroundColor3 = Color3.fromRGB(240, 245, 235)
-    btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(50, 50, 50)
-    btn.Parent = Frame
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = btn
-
-    return btn
-end
-
--- Server timing label
-local ServerLabel = Instance.new("TextLabel")
-ServerLabel.Size = UDim2.new(1, 0, 0, 30)
-ServerLabel.BackgroundTransparency = 1
-ServerLabel.Text = "Server Timing: Hour: 00, Minute: 00, Second: 00"
-ServerLabel.TextColor3 = Color3.fromRGB(60, 60, 60)
-ServerLabel.Parent = Frame
-
--- Buttons
-local ServerHopBtn = createButton("Server Hop", 35)
-local ClearJobBtn = createButton("Clear Job-ID", 70)
-
--- JobId input
-local JobBox = Instance.new("TextBox")
-JobBox.Size = UDim2.new(0, 220, 0, 30)
-JobBox.Position = UDim2.new(0.5, -110, 0, 105)
-JobBox.PlaceholderText = "Job-ID Input"
-JobBox.Text = ""
-JobBox.BackgroundColor3 = Color3.fromRGB(240, 245, 235)
-JobBox.TextColor3 = Color3.fromRGB(50, 50, 50)
-JobBox.Parent = Frame
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 6)
-corner.Parent = JobBox
-
--- Join JobId button
-local JoinJobBtn = createButton("Join Job-ID", 140)
-local CopyJobBtn = createButton("Copy Job-ID", 175)
-
--- Actions
 ClearJobBtn.MouseButton1Click:Connect(function()
     JobBox.Text = ""
-end)
-
-JoinJobBtn.MouseButton1Click:Connect(function()
-    local jobId = JobBox.Text
-    local placeId = game.PlaceId
-    if jobId ~= "" then
-        TeleportService:TeleportToPlaceInstance(placeId, jobId, player)
-    else
-        warn("Enter a Job ID first.")
-    end
-end)
-
-CopyJobBtn.MouseButton1Click:Connect(function()
-    setclipboard(JobBox.Text) -- Only works in Studio/exploit environments
-end)
-
--- Optional: server timing update
-spawn(function()
-    while wait(1) do
-        local seconds = math.floor(workspace.DistributedGameTime % 60)
-        local minutes = math.floor((workspace.DistributedGameTime / 60) % 60)
-        local hours = math.floor(workspace.DistributedGameTime / 3600)
-        ServerLabel.Text = string.format("Server Timing: Hour: %02d, Minute: %02d, Second: %02d", hours, minutes, seconds)
-    end
 end)
