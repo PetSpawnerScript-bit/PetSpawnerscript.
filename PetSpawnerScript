@@ -1,16 +1,35 @@
--- Clear Job-ID button (red)
-local ClearJobBtn = Instance.new("TextButton")
-ClearJobBtn.Size = UDim2.new(0, 220, 0, 30)
-ClearJobBtn.Position = UDim2.new(0.5, -110, 0, 70)
-ClearJobBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50) -- red background
-ClearJobBtn.Text = "Clear Job-ID"
-ClearJobBtn.TextColor3 = Color3.fromRGB(255, 255, 255) -- white text
-ClearJobBtn.Parent = Frame
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
-local clearCorner = Instance.new("UICorner")
-clearCorner.CornerRadius = UDim.new(0, 6)
-clearCorner.Parent = ClearJobBtn
+local function isServerAlive(placeId, jobId)
+    local success, result = pcall(function()
+        return game:HttpGet(string.format("https://games.roblox.com/v1/games/%d/servers/Public?limit=100", placeId))
+    end)
+    if success then
+        local data = HttpService:JSONDecode(result)
+        for _, server in ipairs(data.data) do
+            if server.id == jobId then
+                return true, server.playing, server.maxPlayers
+            end
+        end
+    end
+    return false
+end
 
-ClearJobBtn.MouseButton1Click:Connect(function()
-    JobBox.Text = ""
+JoinJobBtn.MouseButton1Click:Connect(function()
+    local placeId = tonumber(PlaceBox.Text)
+    local jobId = JobBox.Text
+    if placeId and jobId ~= "" then
+        local alive, players, maxPlayers = isServerAlive(placeId, jobId)
+        if alive then
+            print("Joining server:", jobId, string.format("(%d/%d players)", players, maxPlayers))
+            TeleportService:TeleportToPlaceInstance(placeId, jobId, player)
+        else
+            warn("Server not found or no longer available.")
+        end
+    else
+        warn("Please enter both a valid Place ID and Job ID.")
+    end
 end)
