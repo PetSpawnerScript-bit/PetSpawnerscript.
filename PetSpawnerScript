@@ -1,65 +1,98 @@
--- LocalScript in StarterPlayerScripts
+-- LocalScript inside StarterGui > ScreenGui
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
-local player = game.Players.LocalPlayer
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = player.PlayerGui
+-- Create main GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
 
--- TEXT
-local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
-textLabel.Position = UDim2.new(0.25, 0, 0.05, 0)
-textLabel.Text = "GET RICK ROLLED LOL"
-textLabel.TextScaled = true
-textLabel.Font = Enum.Font.SourceSansBold
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.BackgroundTransparency = 1
-textLabel.Parent = screenGui
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 250, 0, 220)
+Frame.Position = UDim2.new(0.4, 0, 0.3, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(230, 235, 225)
+Frame.Parent = ScreenGui
 
--- IMAGE
-local imageLabel = Instance.new("ImageLabel")
-imageLabel.Size = UDim2.new(0.5, 0, 0.5, 0)
-imageLabel.Position = UDim2.new(0.25, 0, 0.2, 0)
-imageLabel.Image = "rbxassetid://1234567890" -- Replace with your decal ID
-imageLabel.BackgroundTransparency = 1
-imageLabel.Parent = screenGui
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = Frame
 
--- MUSIC
-local sound = Instance.new("Sound")
-sound.SoundId = "rbxassetid://9876543210" -- Replace with your audio ID
-sound.Volume = 1
-sound.Looped = true
-sound.Parent = player:WaitForChild("PlayerGui")
-sound:Play()
+-- Make Frame draggable
+Frame.Active = true
+Frame.Draggable = true
 
--- FLASHING TEXT COLORS
-task.spawn(function()
-	while true do
-		textLabel.TextColor3 = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))
-		task.wait(0.2)
-	end
+-- Helper: create buttons
+local function createButton(text, positionY)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 220, 0, 30)
+    btn.Position = UDim2.new(0.5, -110, 0, positionY)
+    btn.BackgroundColor3 = Color3.fromRGB(240, 245, 235)
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(50, 50, 50)
+    btn.Parent = Frame
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = btn
+
+    return btn
+end
+
+-- Server timing label
+local ServerLabel = Instance.new("TextLabel")
+ServerLabel.Size = UDim2.new(1, 0, 0, 30)
+ServerLabel.BackgroundTransparency = 1
+ServerLabel.Text = "Server Timing: Hour: 00, Minute: 00, Second: 00"
+ServerLabel.TextColor3 = Color3.fromRGB(60, 60, 60)
+ServerLabel.Parent = Frame
+
+-- Buttons
+local ServerHopBtn = createButton("Server Hop", 35)
+local ClearJobBtn = createButton("Clear Job-ID", 70)
+
+-- JobId input
+local JobBox = Instance.new("TextBox")
+JobBox.Size = UDim2.new(0, 220, 0, 30)
+JobBox.Position = UDim2.new(0.5, -110, 0, 105)
+JobBox.PlaceholderText = "Job-ID Input"
+JobBox.Text = ""
+JobBox.BackgroundColor3 = Color3.fromRGB(240, 245, 235)
+JobBox.TextColor3 = Color3.fromRGB(50, 50, 50)
+JobBox.Parent = Frame
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 6)
+corner.Parent = JobBox
+
+-- Join JobId button
+local JoinJobBtn = createButton("Join Job-ID", 140)
+local CopyJobBtn = createButton("Copy Job-ID", 175)
+
+-- Actions
+ClearJobBtn.MouseButton1Click:Connect(function()
+    JobBox.Text = ""
 end)
 
--- SPINNING IMAGE
-task.spawn(function()
-	local rotation = 0
-	while true do
-		rotation = (rotation + 2) % 360
-		imageLabel.Rotation = rotation
-		task.wait(0.03)
-	end
+JoinJobBtn.MouseButton1Click:Connect(function()
+    local jobId = JobBox.Text
+    local placeId = game.PlaceId
+    if jobId ~= "" then
+        TeleportService:TeleportToPlaceInstance(placeId, jobId, player)
+    else
+        warn("Enter a Job ID first.")
+    end
 end)
 
--- PULSATING IMAGE SIZE
-task.spawn(function()
-	local grow = true
-	while true do
-		if grow then
-			imageLabel.Size = imageLabel.Size + UDim2.new(0.01, 0, 0.01, 0)
-			if imageLabel.Size.X.Scale >= 0.6 then grow = false end
-		else
-			imageLabel.Size = imageLabel.Size - UDim2.new(0.01, 0, 0.01, 0)
-			if imageLabel.Size.X.Scale <= 0.4 then grow = true end
-		end
-		task.wait(0.05)
-	end
+CopyJobBtn.MouseButton1Click:Connect(function()
+    setclipboard(JobBox.Text) -- Only works in Studio/exploit environments
+end)
+
+-- Optional: server timing update
+spawn(function()
+    while wait(1) do
+        local seconds = math.floor(workspace.DistributedGameTime % 60)
+        local minutes = math.floor((workspace.DistributedGameTime / 60) % 60)
+        local hours = math.floor(workspace.DistributedGameTime / 3600)
+        ServerLabel.Text = string.format("Server Timing: Hour: %02d, Minute: %02d, Second: %02d", hours, minutes, seconds)
+    end
 end)
